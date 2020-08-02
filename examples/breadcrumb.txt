@@ -8,7 +8,7 @@ TXT:\u@\h
 FRM:bold,fg:green,bg:blue
 BRD
 FRM:bold,fg:light-gray,bg:blue
-TXT:\w 
+TXT:$(parse_pwd) 
 FRM:bold,fg:blue,bg:green
 BRD
 FRM:bold,fg:light-gray,bg:green
