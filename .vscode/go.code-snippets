@@ -1,0 +1,374 @@
+{
+  "Error nil check": {
+    "prefix": "tpl-err",
+    "body": ["if err != nil {", "\treturn err", "}"]
+  },
+  "Error nil check msg": {
+    "prefix": "tpl-errm",
+    "body": ["if err != nil {", "\treturn msg.Meta().SetError(err)", "}"]
+  },
+  "Error nil check wrap": {
+    "prefix": "tpl-errw",
+    "body": ["if err != nil {", "\treturn common.Wrap(err, \"$0\")", "}"]
+  },
+  "Error nil check http": {
+    "prefix": "tpl-errh",
+    "body": [
+      "if err != nil {",
+      "\tweb.Log(r).Debug(\"$1\")",
+      "\tweb.RenderError(w, r, err)",
+      "\treturn",
+      "}"
+    ]
+  },
+  "Error orm": {
+    "prefix": "tpl-erro",
+    "body": [
+      "if err = $1.Error(); err != nil {",
+      "\treturn common.Wrap(err, \"$2\")",
+      "}"
+    ]
+  },
+  "Error orm DB Wrap": {
+    "prefix": "tpl-err-dbw",
+    "body": [
+      "if err != nil {",
+      "\tdb.err = common.Wrap(err, \"$1\")",
+      "\treturn db",
+      "}"
+    ]
+  },
+  "Error orm DB Wrapf": {
+    "prefix": "tpl-err-dbwf",
+    "body": [
+      "if err != nil {",
+      "\tdb.err = common.Wrapf(err, \"$1\", $2)",
+      "\treturn db",
+      "}"
+    ]
+  },
+  "Error orm DB Error": {
+    "prefix": "tpl-err-dbe",
+    "body": ["db.err = common.Error(\"$1\")", "return db"]
+  },
+  "Error orm DB Errorf": {
+    "prefix": "tpl-err-dbef",
+    "body": ["db.err = common.Errorf(\"$1\", $2)", "return db"]
+  },
+  "Constant definition": {
+    "prefix": "tpl-const",
+    "body": ["// $1 constant", "const $1 = $2"]
+  },
+  "JSON/YAML field": {
+    "prefix": "tpl-field",
+    "body": "$1 $2 `json:\"$3\" yaml:\"$3\"`"
+  },
+  "JSON field": {
+    "prefix": "tpl-json",
+    "body": "$1 $2 `json:\"$3,omitempty\"`"
+  },
+  "YAML field": {
+    "prefix": "tpl-yaml",
+    "body": "$1 $2 `yaml:\"$3\"`"
+  },
+  "GORM field": {
+    "prefix": "tpl-orm",
+    "body": "$1 $2 `orm:\"$3\"`"
+  },
+  "Next load/save": {
+    "prefix": "tpl-next-load-save",
+    "body": [
+      "// Next load begin",
+      "next, err = dbi.NewNext(args.Next, func(n *dbi.Next) bool {",
+      "\treturn n.Check(\"$1\", $2)",
+      "})",
+      "if err != nil {",
+      "\tweb.RenderError(w, r, err)",
+      "\treturn",
+      "}",
+      "",
+      "if !next.IsEmpty() {",
+      "\targs.Limit = next.PageSize",
+      "}",
+      "// Next load end",
+      "",
+      "$0",
+      "",
+      "// Next save begin",
+      "next.Name = \"$1\"",
+      "next.PageSize = args.Limit",
+      "result.Next, err = next.Save(len(result.List))",
+      "if err != nil {",
+      "\tweb.RenderError(w, r, err)",
+      "\treturn",
+      "}",
+      "// Next save end"
+    ]
+  },
+  "Next save": {
+    "prefix": "tpl-next-save",
+    "body": ""
+  },
+  "List Implementation": {
+    "prefix": "tpl-list",
+    "body": [
+      "// $1List type",
+      "type $1List struct {",
+      "\tList []*$1 `json:\"list\"`",
+      "\tNext string   `json:\"next,omitempty\"`",
+      "}",
+      "",
+      "// Add implementation",
+      "func (l *$1List) Add(item interface{}) error {",
+      "\tswitch v := item.(type) {",
+      "\tcase *$1:",
+      "\t\tl.List = append(l.List, v)",
+      "\t\treturn nil",
+      "\tdefault:",
+      "\t\treturn common.TypeMustBe(item, &$1{})",
+      "\t}",
+      "}"
+    ]
+  },
+  "Default fields": {
+    "prefix": "tpl-def-fields",
+    "body": [
+      "// Default fields",
+      "Version int `json:\"version,omitempty\"`",
+      "CreatedAt time.Time `json:\"createdAt,omitempty\"`",
+      "UpdatedAt time.Time `json:\"updatedAt,omitempty\"`"
+    ]
+  },
+  "Handler Interface": {
+    "prefix": "tpl-handler-func",
+    "body": [
+      "// $1Handler interface",
+      "type $1Handler interface {",
+      "\tHandle$1($2) $3",
+      "}",
+      "",
+      "// $1HandlerFunc interface",
+      "type $1HandlerFunc func($2) $3",
+      "",
+      "// Handle$1 implementation",
+      "func (f $1HandlerFunc) Handle$1($2) $3 {",
+      "\treturn f($4)",
+      "}"
+    ]
+  },
+  "HTTP Handler func": {
+    "prefix": "tpl-http-handler-func",
+    "body": [
+      "func $1(w http.ResponseWriter, r *http.Request) {",
+      "\t$0",
+      "} // $1"
+    ]
+  },
+  "Transform Slice generator": {
+    "prefix": "tpl-map-slice",
+    "body": [
+      "// MapSlice$1To$2 transformer",
+      "func MapSlice$1To$2(src []$3, fn func($3) $4) []$4 {",
+      "\tif len(src) == 0 {",
+      "\t\treturn nil",
+      "\t}",
+      "\tvar res = make([]$4, len(src))",
+      "\tfor k, v := range src {",
+      "\t\tres[k] = fn(v)",
+      "\t}",
+      "\treturn res",
+      "}"
+    ]
+  },
+  "Redis Error": {
+    "prefix": "tpl-redis-error",
+    "body": [
+      "if err != nil {",
+      "\t\treturn $3, WrapF(err, \"REDIS[%s] $1\", TrimSuffix(r.prefix, \"_\"), $2)",
+      "\t}"
+    ]
+  },
+  "Redis crud": {
+    "prefix": "tpl-redis-crud",
+    "body": [
+      "func (r *iRedis) $1Get(name string, defValue $2) $2 {",
+      "\tvar conn = redisPool.Get()",
+      "\tdefer conn.Close()",
+      "",
+      "\tvar str, err = redis.String(conn.Do(\"GET\", r.encKey(name)))",
+      "\tif err != nil {",
+      "\t\treturn defValue",
+      "\t}",
+      "\tvar res $2",
+      "\t$3",
+      "\treturn res",
+      "}",
+      "func (r *iRedis) $1GetErr(name string) ($2, error) {",
+      "\tvar conn = redisPool.Get()",
+      "\tdefer conn.Close()",
+      "",
+      "\tvar str, err = redis.String(conn.Do(\"GET\", r.encKey(name)))",
+      "\tif err != nil {",
+      "\t\treturn \"\", WrapF(err, \"REDIS[%s] GET %s\", TrimSuffix(r.prefix, \"_\"), name)",
+      "\t}",
+      "\tvar res $2",
+      "\t$3",
+      "\treturn res, nil",
+      "}",
+      "func (r *iRedis) $1Set(name string, value $2, expires time.Duration) error {",
+      "\tvar conn = redisPool.Get()",
+      "\tdefer conn.Close()",
+      "",
+      "\tvar err error",
+      "\tvar args = []interface{}{",
+      "\t\tr.encKey(name),",
+      "\t\t$4,",
+      "\t}",
+      "\tif expires != 0 {",
+      "\t\targs = append(args, \"PX\", expires.Nanoseconds()/int64(time.Millisecond))",
+      "\t}",
+      "",
+      "\t_, err = redis.String(conn.Do(\"SET\", args...))",
+      "\tif err != nil {",
+      "\t\tvar sExpires = \"\"",
+      "\t\tif expires > 0 {",
+      "\t\t\tsExpires = \"expires \" + expires.String()",
+      "\t\t}",
+      "\t\treturn WrapF(err, \"REDIS[%s] SET %s='%s'%s\", TrimSuffix(r.prefix, \"_\"), name, value, sExpires)",
+      "\t}",
+      "\treturn nil",
+      "}",
+      ""
+    ]
+  },
+  "Initial service": {
+    "prefix": "tpl-service-init",
+    "body": [
+      "var doc *docs.Service",
+      "var svc = \"$1\"",
+      "var ver = \"v0\"",
+      "var iRedis common.Redis",
+      "var storage common.IStorage",
+      "",
+      "var mwrNoCache = middlewares.NoCache",
+      "var mwrCompress = middlewares.Compress(flate.DefaultCompression)",
+      "var mwrRequestID = middlewares.RequestID",
+      "var mwrLang = common.LangMiddleware",
+      "var mwrMeta = middlewares.MetaMiddleware",
+      "var mwrPrincipal func(http.Handler) http.Handler",
+      "var mwrRoleService = middlewares.Rbac(\"service\")",
+      "var mwrServiceCli = middlewares.Sbac(\"cli\")",
+      "",
+      "// define your table names. Use plural names",
+      "var tbMain = \"$1_main\"",
+      "",
+      "// AllEntities to export for tests",
+      "var AllEntities = []orm.Entity{}",
+      "",
+      "func initCode() {",
+      "\tvar dialect = mysqli.Dialect()",
+      "\thandleError(common.InitBusURL(common.CfgStr(\"NATS_URL\", \"nats://nats.openfass.svc.cluster.local:4222\")))",
+      "\thandleError(minioi.InitFromSecret())",
+      "\thandleError(dbi.InitDB(dialect))",
+      "\thandleError(orm.InitORM(dialect, AllEntities...))",
+      "\tstorage = minioi.Storage()",
+      "\tiRedis = common.NewRedis(\"$1\")",
+      "\tmwrPrincipal = common.PrincipalMiddleware(iRedis)",
+      "\tdoc = docs.NewCmdService(\"$1\", \"0.1.0\", \"$2 Service\")",
+      "\thandleError(dbi.ExecTx(func(tx *sql.Tx) error {",
+      "\t\tvar err error",
+      "\t\tvar db = orm.NewDB(tx)",
+      "\t\tvar isSame bool",
+      "",
+      "\t\tif err = db.SameSchema(&isSame).Error(); err != nil {",
+      "\t\t\treturn common.Wrap(err, \"Checking same schema\")",
+      "\t\t}",
+      "",
+      "\t\tif !isSame {",
+      "\t\t\terr = ResetDB(tx)",
+      "\t\t\tif err != nil {",
+      "\t\t\t\treturn common.Wrap(err, \"Resetting DB\")",
+      "\t\t\t}",
+      "\t\t}",
+      "",
+      "\t\terr = InitialLoad(tx)",
+      "\t\tif err != nil {",
+      "\t\t\treturn err",
+      "\t\t}",
+      "\t\treturn nil",
+      "\t}))",
+      "\t}",
+      "",
+      "func handleError(err error) {",
+      "\tif err != nil {",
+      "\t\tpanic(err.Error())",
+      "\t}",
+      "}",
+      "",
+      "// Config Router",
+      "func Config(r *mux.Router) {",
+      "\tinitSvc()",
+      "\tr.Use(",
+      "\t\tmwrNoCache,",
+      "\t\tmwrCompress,",
+      "\t\tmwrRequestID,",
+      "\t\tmwrLang,",
+      "\t\tmwrPrincipal,",
+      "\t\tmwrMeta,",
+      "\t)",
+      "\tr.HandleFunc(\"/\", handleDocs).",
+      "\t\tMethods(\"GET\")",
+      "\t// set your routes here",
+      "}",
+      "",
+      "func handleDocs(w http.ResponseWriter, r *http.Request) {",
+      "\tweb.RenderJSON(w, r, http.StatusOK, doc)",
+      "}",
+      "",
+      "func getLog(r *http.Request) *common.Logger {",
+      "\treturn middlewares.Log(r)",
+      "}",
+      ""
+    ]
+  },
+  "Entity template": {
+    "prefix": "tpl-entity",
+    "body": [
+      "// TableName Entity implementation",
+      "func (e *$1) TableName() string {",
+      "\treturn \"$2_$3\"",
+      "}",
+      "",
+      "// TableType Entity implementation",
+      "func (e *$1) TableType() orm.TableType {",
+      "\treturn orm.TableTypeNormal",
+      "}",
+      "",
+      "// FromDto method",
+      "func (e *$1) FromDto(src *$2.$1) error {",
+      "\treturn nil",
+      "}",
+      "",
+      "// ToDto method",
+      "func (e *$1) ToDto(target *$2.$1) error {",
+      "\treturn nil",
+      "}"
+    ]
+  },
+  "DB Check error": {
+    "prefix": "tpl-db-check-err",
+    "body": ["if db.err != nil {", "\treturn db", "}"]
+  },
+  "Template for Temp": {
+    "prefix": "tpl-temp",
+    "body": [
+      "func (r *rd$1) Scanners() []interface{} {",
+      "\treturn rdS1(r)",
+      "}",
+      "func (r *rd$1) Read(value reflect.Value, allowNull bool) error {",
+      "\treturn rdR1(value, \"$1\", allowNull, r.Valid, reflect.$1, (*$2)(nil), r.$1)",
+      "}",
+      ""
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+black: 0
+red: 1
+green: 2
+yellow: 3
+blue: 4
+magenta: 5
+cyan: 6
+light-gray: 7
+dark-gray: 60
+light-red: 61
+light-green: 62
+light-yellow: 63
+light-blue: 64
+light-magenta: 65
+light-cyan: 66
+white: 67

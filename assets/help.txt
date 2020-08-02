@@ -1,0 +1,35 @@
+Bash Prompt generator
+syntax: bash-prompt [CONFIG_FILE]
+
+Without arguments shows this help
+CONFIG_FILE is the filename with the configuration to apply
+
+Configuration File
+Each line is a command with the following syntax:
+CMD:ARGS
+
+Commands
+NOP    No Operation. You can consider as a comment
+TXT    Adds the text following the colon until the end of line
+FRM    Adds a format commands as numbers, definitions or FRM:ARG which can be numbers or definitions
+BRD    Adds a breadcrump character with a space if no END argument is provided
+
+Format Commands
+set    Sets the provided argument as is
+rst    Resets the formatting for the provided argument
+fg     Sets the foreground using a 16 color palette
+bg     Sets the background using a 16 color palette
+fg256  Sets the foreground using a 256 color palette
+bg256  Sets the background using a 256 color palette
+
+Example
+FRM:bold,fg:cyan
+TXT:[\t] 
+FRM:bold,fg:green
+TXT:\u@\h
+FRM:rst:0
+TXT::
+FRM:bold,fg:blue
+TXT:\w
+FRM:rst:zero
+TXT:$ 

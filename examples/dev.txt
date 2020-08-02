@@ -1,0 +1,17 @@
+TXT:\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}
+FRM:bold,fg:cyan
+TXT:[\t] 
+FRM:bold,fg:green
+TXT:\u@\h
+FRM:rst:0
+TXT::
+FRM:bold,fg:blue
+TXT:\w
+FRM:bold,fg:green
+TXT:($(parse_git_branch))
+FRM:rst:zero
+TXT: 
+FRM:bold,fg:magenta
+TXT:[$(parse_git_status)]\n└─>
+FRM:rst:zero
+TXT:$

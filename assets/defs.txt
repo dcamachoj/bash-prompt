@@ -1,0 +1,9 @@
+zero: 0
+bold: 1
+dim: 2
+underline: 4
+blink: 5
+reverse: 5
+hidden: 8
+default: 9
+reset: 20
